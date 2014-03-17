@@ -34,6 +34,7 @@ class SingleHitTask extends Task {
                     if (!runner.taskProperties.requireApproval || av.status == AssignmentView.Status.APPROVED) {
                         mturkTaskService.onAssignment(runner,av)
                         av.processed = true
+                        av.save()
                     }
                 }
             }

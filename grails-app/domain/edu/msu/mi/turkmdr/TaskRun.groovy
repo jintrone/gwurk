@@ -40,7 +40,9 @@ class TaskRun implements BeatListener{
      * @return
      */
     boolean hasAllAssignments() {
+        log.info("Searching for all assignments")
         allHits*.assignments.findAll {
+            println "Looking for assignment ${it}"
             taskProperties.requireApproval?it.status == AssignmentView.Status.APPROVED:true
         }.size() >= taskProperties.maxAssignments
     }
