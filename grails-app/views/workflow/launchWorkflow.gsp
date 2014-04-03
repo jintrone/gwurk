@@ -5,7 +5,7 @@
   Time: 1:16 PM
 --%>
 
-<%@ page import="edu.msu.mi.turkmdr.Credentials; edu.msu.mi.turkmdr.Workflow" contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.msu.mi.gwurk.Credentials; edu.msu.mi.gwurk.Credentials; edu.msu.mi.gwurk.Workflow" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title></title>
@@ -22,7 +22,7 @@
 
     Type of run? <g:select from="${["sandbox","real"]}" name="type" value="sandbox"/> <br/>
     Iterations?  <g:field name="iterations" type="number" value="1"/><br/>
-    Credentials? <g:select name="credentials" from="${Credentials.list()}" optionKey="id" optionValue="name"/><br/>
+    Credentials? <g:select name="credentials" from="${edu.msu.mi.gwurk.Credentials.list()}" optionKey="id" optionValue="name"/><br/>
 
     </p>
     <h2>Global Properties</h2>

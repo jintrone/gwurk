@@ -1,0 +1,29 @@
+<plugin name='gwurk' version='0.1' grailsVersion='2.3 &gt; *'>
+  <author>Joshua Intronee</author>
+  <title>Gwurk Plugin</title>
+  <description>Gwurk is a simple level of abstraction upon Amazon's horrendously awful Java API for the Mechanical Turk web service.
+</description>
+  <documentation>http://grails.org/plugin/gwurk-plugin</documentation>
+  <type>GwurkGrailsPlugin</type>
+  <resources>
+    <resource>BootStrap</resource>
+    <resource>PluginResources</resource>
+    <resource>PluginUrlMappings</resource>
+    <resource>edu.msu.mi.gwurk.CredentialsController</resource>
+    <resource>edu.msu.mi.gwurk.JavascriptController</resource>
+    <resource>edu.msu.mi.gwurk.WorkflowController</resource>
+    <resource>edu.msu.mi.gwurk.WorkflowRunController</resource>
+    <resource>edu.msu.mi.gwurk.AssignmentView</resource>
+    <resource>edu.msu.mi.gwurk.Credentials</resource>
+    <resource>edu.msu.mi.gwurk.HitView</resource>
+    <resource>edu.msu.mi.gwurk.SingleHitTask</resource>
+    <resource>edu.msu.mi.gwurk.Task</resource>
+    <resource>edu.msu.mi.gwurk.TaskProperties</resource>
+    <resource>edu.msu.mi.gwurk.TaskRun</resource>
+    <resource>edu.msu.mi.gwurk.Workflow</resource>
+    <resource>edu.msu.mi.gwurk.WorkflowRun</resource>
+    <resource>edu.msu.mi.gwurk.MturkAwsFacadeService</resource>
+    <resource>edu.msu.mi.gwurk.MturkMonitorService</resource>
+    <resource>edu.msu.mi.gwurk.MturkTaskService</resource>
+  </resources>
+</plugin>

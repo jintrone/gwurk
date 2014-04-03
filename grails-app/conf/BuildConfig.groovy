@@ -23,7 +23,7 @@ grails.project.dependency.resolution = {
         // uncomment to disable ehcache
         // excludes 'ehcache'
     }
-    log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    log "debug" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
     repositories {
         grailsCentral()
         mavenLocal()
@@ -43,7 +43,7 @@ grails.project.dependency.resolution = {
 
     plugins {
 
-        compile: ":shiro:1.2.0"
+        compile(":shiro:1.2.0")
 
         build(":release:3.0.1",
               ":rest-client-builder:1.0.3") {

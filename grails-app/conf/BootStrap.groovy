@@ -1,4 +1,4 @@
-import edu.msu.mi.turkmdr.MturkMonitorService
+import edu.msu.mi.gwurk.MturkMonitorService
 
 /**
  * Created by josh on 2/19/14.
