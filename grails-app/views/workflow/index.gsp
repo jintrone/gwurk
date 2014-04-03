@@ -5,7 +5,7 @@
   Time: 12:44 PM
 --%>
 
-<%@ page import="edu.msu.mi.turkmdr.Workflow" contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.msu.mi.gwurk.Workflow" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title></title>

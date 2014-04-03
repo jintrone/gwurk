@@ -1,11 +1,8 @@
 class PluginUrlMappings {
 
-	static mappings = {
+    static mappings = {
 
-        "/js/turk.js" {
-            controller="javascript"
-            action="turk"
-        }
+
 
         "/$controller/$action?/$id?(.${format})?"{
             constraints {
@@ -13,7 +10,7 @@ class PluginUrlMappings {
             }
         }
 
-        "/"(view:"/index")
-        "500"(view:'/error')
-	}
+        "/"(view: "/index")
+        "500"(view: '/error')
+    }
 }

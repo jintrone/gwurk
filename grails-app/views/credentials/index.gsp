@@ -5,7 +5,7 @@
   Time: 11:08 PM
 --%>
 
-<%@ page import="edu.msu.mi.turkmdr.Credentials" contentType="text/html;charset=UTF-8" %>
+<%@ page import="edu.msu.mi.gwurk.Credentials" contentType="text/html;charset=UTF-8" %>
 <html>
 <head>
     <title>Credentials</title>
@@ -40,7 +40,7 @@
         </g:each>
     </table>
 </g:else>
-<g:form action="add">
+<form action="./add" method="post">
     <table>
         <tr>
             <td>
@@ -55,7 +55,7 @@
         </tr>
     </table>
     <g:submitButton name="Submit" value="Add new credential"/>
-</g:form>
+</form>
 
 </body>
 </html>

@@ -1,4 +1,6 @@
+import edu.msu.mi.gwurk.ShiroUser
 import org.springframework.web.servlet.ModelAndView
+import org.apache.shiro.crypto.hash.Sha256Hash
 
 class GwurkGrailsPlugin {
     // the plugin version
@@ -12,7 +14,7 @@ class GwurkGrailsPlugin {
 
     // TODO Fill in these fields
     def title = "Gwurk Plugin" // Headline display name of the plugin
-    def author = "Joshua Intronee"
+    def author = "Joshua Introne"
     def authorEmail = ""
     def description = '''\
 Gwurk is a simple level of abstraction upon Amazon's horrendously awful Java API for the Mechanical Turk web service.
@@ -53,6 +55,8 @@ Gwurk is a simple level of abstraction upon Amazon's horrendously awful Java API
 
     def doWithApplicationContext = { ctx ->
         ctx.mturkMonitorService.init()
+
+
     }
 
     def onChange = { event ->
