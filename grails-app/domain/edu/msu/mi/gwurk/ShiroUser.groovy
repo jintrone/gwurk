@@ -3,6 +3,10 @@ package edu.msu.mi.gwurk
 class ShiroUser {
     String username
     String passwordHash
+
+    static mapping = {
+        autoImport false
+    }
     
     static hasMany = [ roles: ShiroRole, permissions: String ]
 
