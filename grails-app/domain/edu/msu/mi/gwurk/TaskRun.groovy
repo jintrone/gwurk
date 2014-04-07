@@ -18,6 +18,7 @@ class TaskRun implements BeatListener{
     static mappedBy = [allHits:"taskRun"]
 
 
+    Task task
     Status taskStatus
     HitView activeHit
     TaskProperties taskProperties

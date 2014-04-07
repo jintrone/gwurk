@@ -27,7 +27,7 @@ class WorkflowController {
 
     def external() {
         TaskRun run = TaskRun.get(params.task as long)
-        [workerId: params.workerId, action: run.taskProperties.action,controller: run.taskProperties.controller, submiturl: run.submitUrl, assignmentId: params.assignmentId]
+        [taskrun: params.task, workerId: params.workerId, action: run.taskProperties.action,controller: run.taskProperties.controller, submiturl: run.submitUrl, assignmentId: params.assignmentId]
 
     }
 
