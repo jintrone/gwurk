@@ -21,7 +21,7 @@ class TaskRun implements BeatListener{
     Status taskStatus
     HitView activeHit
     TaskProperties taskProperties
-    Task task
+    Map<String,String> userProperties = [:]
 
 
     public TaskRun(Task task, TaskProperties props) {
@@ -49,7 +49,17 @@ class TaskRun implements BeatListener{
         }
         log.debug("Found completed: ${assignments}")
 
+
         assignments.size()>= taskProperties.maxAssignments
+    }
+
+    void setUserProperty(String key, String val) {
+       userProperties[key] = val
+        save()
+    }
+
+    String getUserProperty(String key) {
+        userProperties[key]
     }
 
     /**
