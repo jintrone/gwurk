@@ -4,7 +4,7 @@ import org.apache.shiro.crypto.hash.Sha256Hash
 
 class GwurkGrailsPlugin {
     // the plugin version
-    def version = "0.2"
+    def version = "0.3"
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.3 > *"
     // resources that are excluded from plugin packaging
@@ -17,7 +17,7 @@ class GwurkGrailsPlugin {
     def author = "Joshua Introne"
     def authorEmail = ""
     def description = '''\
-Gwurk is a simple level of abstraction upon Amazon's horrendously awful Java API for the Mechanical Turk web service.
+Gwurk offers a level of abstraction upon Amazon's Mechanical Turk web service.  Introduces concepts of Workflows and Tasks. Converts existing gsp pages into external hits on mturk.
 '''
 
     // URL to the plugin's documentation
