@@ -137,7 +137,11 @@ class WorkflowRun implements BeatListener {
                     removeFromCurrentTasks(currTaskRun)
                     if (currTaskRun.task.next) {
                         currTaskRun.task.next.each {
-                            addTask(it,true,currTaskRun)
+                            if (mturkTaskService.advanceToTask(currTaskRun,it)) {
+                                addTask(it,true,currTaskRun)
+                            } else {
+                                log.info("Could not advance to ${it.name}; fails conditional")
+                            }
 
                         }
 

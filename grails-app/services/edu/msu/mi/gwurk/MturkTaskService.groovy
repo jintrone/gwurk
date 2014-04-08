@@ -13,6 +13,7 @@ class MturkTaskService {
     def taskStartingFx = [:]
     def taskCompleteFx = [:]
     def workflowFx = [:]
+    def taskConditional = [:]
 
 
 
@@ -40,6 +41,21 @@ class MturkTaskService {
         log.info("On Workflowt: ${workflowRun.workflow.name}")
         workflowFx[workflowRun.workflow.name](new GwurkEvent(workflowRun))
     }
+
+    boolean advanceToTask(TaskRun from, Task to) {
+        log.info("Attempting to run conditional ${from.task.name} -> ${to.name}")
+        if (taskConditional["${from.task.name}_${to.name}"]) {
+            taskConditional["${from.task.name}_${to.name}"](from)
+        } else {
+            true
+        }
+    }
+
+
+    def installConditional(Task from, Task to, Closure c) {
+        taskConditional["${from.name}_${to.name}"]=c
+    }
+
 
 
     def installTask(Task t, Closure c) {

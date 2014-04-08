@@ -33,6 +33,13 @@ abstract class Task  {
 
 
 
+    def addNextTask(Task t) {
+        addToNext(t)
+
+    }
+
+
+
     MturkTaskService getService() {
         return mturkTaskService
     }
