@@ -16,7 +16,7 @@ class WorkflowRun implements BeatListener {
 
 
     static enum Status {
-        WAITING, RUNNING, DONE
+        WAITING,  RUNNING, DONE
     }
 
     def mturkTaskService
@@ -32,8 +32,11 @@ class WorkflowRun implements BeatListener {
     long retryDelayMillis = 1000
     int iteration = 0
     int maxIterations = 0
+
     TaskProperties globalProperties
     Map taskProperties = [:]
+    Map<String,String> userProperties = [:]
+
     Workflow workflow
     Credentials credentials
 
@@ -77,12 +80,15 @@ class WorkflowRun implements BeatListener {
         new RequesterService(config)
     }
 
-    TaskRun addTask(Task t, boolean current) {
+    TaskRun addTask(Task t, boolean current, TaskRun... previous) {
         TaskProperties p =  getTaskProperties(t)
         p.save()
         def tr = new TaskRun(t, p)
         addToAllTasks(tr)
         if (current) addToCurrentTasks(tr)
+        if (previous) previous.each {
+            tr.addToPreviousTaskRuns(it)
+        }
         save()
         tr
     }
@@ -91,11 +97,16 @@ class WorkflowRun implements BeatListener {
         if (currentStatus != Status.WAITING) throw new MturkStateException("Can't reuse a workflow object; plese use 'copy' if you would like to run with existing parameters")
         currentStatus = Status.RUNNING
         maxIterations = times
-        workflow.startingTasks.each { task ->
-           addTask(task,true)
-        }
+         kickoff()
+
         save()
 
+    }
+
+    def kickoff() {
+        workflow.startingTasks.each { task ->
+            addTask(task,true)
+        }
     }
 
     TaskProperties getTaskProperties(Task task) {
@@ -104,19 +115,29 @@ class WorkflowRun implements BeatListener {
 
     }
 
+    void setUserProperty(String key, String val) {
+        userProperties[key] = val
+        save()
+    }
+
+    String getUserProperty(String key) {
+        userProperties[key]
+    }
+
 
     @Override
     def beat(def Object beater, long timestamp) {
         def next = []
         if (currentStatus == Status.RUNNING) {
-            currentTasks.toArray(new TaskRun[0]).each {
-                it.beat(this, System.currentTimeMillis())
-                if (it.taskStatus == TaskRun.Status.COMPLETE) {
-                    log.info("Removing TaskRun:${it.task.name}")
-                    removeFromCurrentTasks(it)
-                    if (it.task.next) {
-                        it.task.next.each {
-                            addTask(it,true)
+            currentTasks.toArray(new TaskRun[0]).each { TaskRun currTaskRun ->
+
+                currTaskRun.beat(this, System.currentTimeMillis())
+                if (currTaskRun.taskStatus == TaskRun.Status.COMPLETE) {
+                    log.info("Removing TaskRun:${currTaskRun.task.name}")
+                    removeFromCurrentTasks(currTaskRun)
+                    if (currTaskRun.task.next) {
+                        currTaskRun.task.next.each {
+                            addTask(it,true,currTaskRun)
 
                         }
 
@@ -135,9 +156,7 @@ class WorkflowRun implements BeatListener {
             if (iteration >= maxIterations) {
                 currentStatus = Status.DONE
             } else {
-                workflow.startingTasks.each { task ->
-                    addTask(task,true)
-                }
+               kickoff()
             }
         }
         save()

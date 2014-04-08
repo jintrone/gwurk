@@ -10,7 +10,8 @@ class MturkTaskService {
 
     def assignmentFx = [:]
     def hitFx = [:]
-    def taskFx = [:]
+    def taskStartingFx = [:]
+    def taskCompleteFx = [:]
     def workflowFx = [:]
 
 
@@ -25,9 +26,14 @@ class MturkTaskService {
         hitFx[taskRun.task.name](new GwurkEvent(taskRun,hitView))
     }
 
-    def onTask(TaskRun taskRun) {
-        log.info("On Task: ${taskRun.task.name}")
-        taskFx[taskRun.task.name](new GwurkEvent(taskRun))
+    def onTaskStarting(TaskRun taskRun) {
+        log.info("On Task Starting: ${taskRun.task.name}")
+        taskStartingFx[taskRun.task.name](new GwurkEvent(taskRun))
+    }
+
+    def onTaskComplete(TaskRun taskRun) {
+        log.info("On Task Complete: ${taskRun.task.name}")
+        taskCompleteFx[taskRun.task.name](new GwurkEvent(taskRun))
     }
 
     def onWorkflow(WorkflowRun workflowRun) {
@@ -38,7 +44,8 @@ class MturkTaskService {
 
     def installTask(Task t, Closure c) {
         if (c) {
-            taskFx+=[ (t.name) : {evt -> c(GwurkEvent.Type.TASK_COMPLETE,evt)}]
+            taskStartingFx+=[ (t.name) : {evt -> c(GwurkEvent.Type.TASK_STARTING,evt)}]
+            taskCompleteFx+=[ (t.name) : {evt -> c(GwurkEvent.Type.TASK_COMPLETE,evt)}]
             assignmentFx+=[ (t.name) :{evt -> c(GwurkEvent.Type.ASSIGNMENT_COMPLETE,evt)}]
             hitFx+=[ (t.name) :{evt -> c(GwurkEvent.Type.HIT_COMPLETE,evt)}]
 

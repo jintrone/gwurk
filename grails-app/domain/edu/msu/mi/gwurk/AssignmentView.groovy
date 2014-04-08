@@ -5,6 +5,7 @@ import com.amazonaws.mturk.dataschema.QuestionFormAnswersType
 import com.amazonaws.mturk.requester.Assignment
 import com.amazonaws.mturk.requester.AssignmentStatus
 import com.amazonaws.mturk.service.axis.RequesterService
+import com.amazonaws.mturk.service.exception.ServiceException
 
 
 class AssignmentView {
@@ -59,6 +60,15 @@ class AssignmentView {
         switch (a.assignmentStatus) {
             case AssignmentStatus.Submitted:
                 assignmentStatus = Status.SUBMITTED
+                if (hit.taskRun.taskProperties.autoApprove) {
+                    try {
+                        service.approveAssignment(assignmentId,"Thanks for your help!")
+                        this.approvalTime = new Date()
+                    update(service)
+                    } catch (ServiceException ex) {
+                        log.warn("Service exception while approving hit: ${ex}")
+                    }
+                }
                 break
 
             case AssignmentStatus.Approved:
@@ -70,13 +80,13 @@ class AssignmentView {
                 break
         }
         if (assignmentStatus == Status.APPROVED) {
-            this.approvalTime = a.approvalTime.time
+            this.approvalTime = a.approvalTime?.time?:this.approvalTime
 
         } else if (assignmentStatus == Status.REJECTED) {
-            this.rejectTime = a.rejectionTime.time
+            this.rejectTime = a.rejectionTime?.time?:this.rejectTime
         }
 
-        this.requestorFeedback = a.requesterFeedback
+        this.requestorFeedback = a?.requesterFeedback
         save()
         if (hasErrors()) {
             log.warn(errors)

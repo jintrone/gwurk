@@ -9,12 +9,15 @@ class TaskRun implements BeatListener{
     static constraints = {
         activeHit nullable: true
         allHits nullable: true
+        previousTaskRuns nullable: true
         activeWorkflowRun nullable: true
 
     }
 
+    //Note workflowRun and activeWorkflowRun will never point to two different workflows; activeWorkflowRun is only included
+    //to speed up access to active taskruns in a running workflow
     static belongsTo = [workflowRun:WorkflowRun,activeWorkflowRun:WorkflowRun]
-    static hasMany = [allHits:HitView]
+    static hasMany = [allHits:HitView,previousTaskRuns:TaskRun]
     static mappedBy = [allHits:"taskRun"]
 
 
@@ -86,6 +89,7 @@ class TaskRun implements BeatListener{
     def beat(def beater, long timestamp) {
         RequesterService service = (beater as WorkflowRun).requesterService
         if (taskStatus == Status.WAITING) {
+            task.mturkTaskService.onTaskStarting(this)
             taskStatus = Status.RUNNING
             log.debug "BEAT: This identity: ${System.identityHashCode(this)} id: $id"
             task.start(service,this)
@@ -122,7 +126,7 @@ class TaskRun implements BeatListener{
     def setStatus(Status s) {
         this.taskStatus = s
         if (taskStatus == Status.COMPLETE) {
-            mturkTaskService.onTask(this)
+            mturkTaskService.onTaskComplete(this)
         }
     }
 

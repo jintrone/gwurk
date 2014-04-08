@@ -16,7 +16,7 @@ public class GwurkEvent {
     AssignmentView assignmentView
 
     public static enum Type {
-        ASSIGNMENT_COMPLETE, HIT_COMPLETE, TASK_COMPLETE, WORKFLOW_COMPLETE
+        ASSIGNMENT_COMPLETE, HIT_COMPLETE, TASK_STARTING, TASK_COMPLETE, WORKFLOW_COMPLETE
     }
 
     GwurkEvent(WorkflowRun workflowRun) {
