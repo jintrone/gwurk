@@ -101,8 +101,20 @@ class AssignmentView {
     public static Map extractAnswers(String answer) {
         QuestionFormAnswers answers = RequesterService.parseAnswers(answer);
         answers.answer.collectEntries { QuestionFormAnswersType.AnswerType a ->
-            [a.getQuestionIdentifier(),a.freeText]
+            if (a.freeText) {
+                [a.getQuestionIdentifier(),a.freeText]
+            } else if (a.selectionIdentifier) {
+                [a.getQuestionIdentifier(),a.selectionIdentifier]
+            } else if (a.otherSelectionText) {
+                [a.questionIdentifier,a.otherSelectionText]
+            } else if (a.uploadedFileSizeInBytes) {
+                [a.questionIdentifier,[size:a.uploadedFileSizeInBytes,key:a.uploadedFileKey]]
+            }
         }
+
+    }
+
+    public FileOutputStream getFile(String key, BigInteger size) {
 
     }
 

@@ -1,7 +1,7 @@
-<plugin name='gwurk' version='0.2' grailsVersion='2.3 &gt; *'>
+<plugin name='gwurk' version='0.3' grailsVersion='2.3 &gt; *'>
   <author>Joshua Introne</author>
   <title>Gwurk Plugin</title>
-  <description>Gwurk is a simple level of abstraction upon Amazon's horrendously awful Java API for the Mechanical Turk web service.
+  <description>Gwurk offers a level of abstraction upon Amazon's Mechanical Turk web service.  Introduces concepts of Workflows and Tasks. Converts existing gsp pages into external hits on mturk.
 </description>
   <documentation>http://grails.org/plugin/gwurk-plugin</documentation>
   <type>GwurkGrailsPlugin</type>

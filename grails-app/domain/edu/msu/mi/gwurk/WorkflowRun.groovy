@@ -16,7 +16,7 @@ class WorkflowRun implements BeatListener {
 
 
     static enum Status {
-        WAITING,  RUNNING, DONE
+        WAITING,  RUNNING, ABORTED, DONE
     }
 
     def mturkTaskService
@@ -60,6 +60,27 @@ class WorkflowRun implements BeatListener {
         currentStatus = Status.WAITING
 
     }
+
+    def abort() {
+        log.warn("Abort is not yet fully implemented - this will fail in an unspecified manner")
+        if (currentStatus == Status.DONE) {
+            log.info("Cannot abort a complete workflow")
+        } else {
+
+            if (currentStatus == Status.WAITING) {
+                log.info("Aborting a Waiting workflow - are you sure you wanted to do this?")
+                currentStatus = Status.DONE
+                save()
+            } else {
+               for (TaskRun r:currentTasks) {
+                   r.status = TaskRun.Status.ABORTED
+               }
+            }
+
+        }
+
+    }
+
 
 
 
@@ -150,11 +171,20 @@ class WorkflowRun implements BeatListener {
 
             }
 
+        } else if (currentStatus == Status.ABORTED) {
+            currentTasks.each { TaskRun tr ->
+                if (tr.taskStatus in TaskRun.Status.RUN_STATES) {
+                    //TODO
+                    log.info("Abort is not yet implemented")
+                }
+
+            }
         }
+
 
         save()
         log.info("Current tasks after save are now $currentTasks")
-        if (currentTasks.isEmpty()) {
+        if (currentTasks.isEmpty() && currentStatus!=Status.ABORTED) {
             ++iteration
             mturkTaskService.onWorkflow(this)
             if (iteration >= maxIterations) {
