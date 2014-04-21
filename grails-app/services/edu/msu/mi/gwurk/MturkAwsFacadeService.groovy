@@ -81,4 +81,10 @@ class MturkAwsFacadeService {
         log.info("Attempt to launch external hit: "+question);
         return question;
     }
+
+    BufferedOutputStream getExternalFile() {
+
+    }
+
+
 }

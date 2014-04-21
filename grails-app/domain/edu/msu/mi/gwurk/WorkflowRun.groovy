@@ -19,6 +19,10 @@ class WorkflowRun implements BeatListener {
         WAITING,  RUNNING, ABORTED, DONE
     }
 
+    static mapping = {
+        real column: "is_real_hit"
+    }
+
     def mturkTaskService
 
 
@@ -179,6 +183,7 @@ class WorkflowRun implements BeatListener {
                 }
 
             }
+
         }
 
 

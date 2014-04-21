@@ -14,16 +14,19 @@ class AssignmentView {
         approvalTime nullable: true
         rejectTime nullable: true
         requestorFeedback nullable: true
+        data nullable: true
+
 
     }
 
     static mapping = {
-        rawAnswer column: "raw_answer", sqlType: "char", length: 4096
+        rawAnswer column: "raw_answer", sqlType: "char", length: 8192
+        data sqlType: "blob"
+
     }
     static enum Status {
         SUBMITTED, APPROVED, REJECTED
     }
-
 
 
     static belongsTo = [hit: HitView]
@@ -35,6 +38,8 @@ class AssignmentView {
     Date submitTime
     Date acceptTime
     String workerId
+    boolean hasData = false
+    byte[] data
 
 
     Date approvalTime
@@ -49,10 +54,11 @@ class AssignmentView {
         this.workerId = a.workerId
         this.acceptTime = a.acceptTime.getTime()
         this.submitTime = a.submitTime.getTime()
-        this.hit = HitView.find { hitId=="${a.getHITId()}"}
+        this.hit = HitView.find { hitId == "${a.getHITId()}" }
         this.rawAnswer = a.answer
-
-        save()
+        hasData = getFileKey()!=null
+        log.info("Has data? ${hasData}")
+       save()
     }
 
     def update(RequesterService service) {
@@ -62,9 +68,9 @@ class AssignmentView {
                 assignmentStatus = Status.SUBMITTED
                 if (hit.taskRun.taskProperties.autoApprove) {
                     try {
-                        service.approveAssignment(assignmentId,"Thanks for your help!")
+                        service.approveAssignment(assignmentId, "Thanks for your help!")
                         this.approvalTime = new Date()
-                    update(service)
+                        update(service)
                     } catch (ServiceException ex) {
                         log.warn("Service exception while approving hit: ${ex}")
                     }
@@ -80,13 +86,19 @@ class AssignmentView {
                 break
         }
         if (assignmentStatus == Status.APPROVED) {
-            this.approvalTime = a.approvalTime?.time?:this.approvalTime
+            this.approvalTime = a.approvalTime?.time ?: this.approvalTime
 
         } else if (assignmentStatus == Status.REJECTED) {
-            this.rejectTime = a.rejectionTime?.time?:this.rejectTime
+            this.rejectTime = a.rejectionTime?.time ?: this.rejectTime
         }
 
         this.requestorFeedback = a?.requesterFeedback
+
+        if (hasData && !data) {
+            log.info("Retrieve data from service")
+            retrieveFile(service)
+        }
+
         save()
         if (hasErrors()) {
             log.warn(errors)
@@ -102,20 +114,34 @@ class AssignmentView {
         QuestionFormAnswers answers = RequesterService.parseAnswers(answer);
         answers.answer.collectEntries { QuestionFormAnswersType.AnswerType a ->
             if (a.freeText) {
-                [a.getQuestionIdentifier(),a.freeText]
+                [a.getQuestionIdentifier(), a.freeText]
             } else if (a.selectionIdentifier) {
-                [a.getQuestionIdentifier(),a.selectionIdentifier]
+                [a.getQuestionIdentifier(), a.selectionIdentifier]
             } else if (a.otherSelectionText) {
-                [a.questionIdentifier,a.otherSelectionText]
+                [a.questionIdentifier, a.otherSelectionText]
             } else if (a.uploadedFileSizeInBytes) {
-                [a.questionIdentifier,[size:a.uploadedFileSizeInBytes,key:a.uploadedFileKey]]
+                [a.questionIdentifier, [size: a.uploadedFileSizeInBytes, key: a.uploadedFileKey]]
             }
         }
 
     }
 
-    public FileOutputStream getFile(String key, BigInteger size) {
+    private Map.Entry getFileKey() {
+        getAnswer().find { k, v ->
+            return (v.hasProperty("size") && v.hasProperty("key"))
+        }
+    }
+
+    private retrieveFile(RequesterService service) {
+        Map.Entry ent = getFileKey()
+        log.info("Retrieving file data ${ent.value.size}")
+        String s = service.getFileUploadURL(assignmentId, ent.key)
+        data = new byte[ent.value.size as int];
+        DataInputStream dataIs = new DataInputStream(new URL(s).openConnection().inputStream)
+        dataIs.readFully(data);
+        dataIs.close()
 
     }
+
 
 }
