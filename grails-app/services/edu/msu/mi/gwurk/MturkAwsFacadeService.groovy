@@ -33,7 +33,7 @@ class MturkAwsFacadeService {
         taskRun.attach()
         MturkHitProperties props = getProperties(taskRun.taskProperties)
         log.info("Launch hit with taskrun id: "+taskRun.id)
-        String url = "http://${grailsApplication.config.gwurk.hostname}:${grailsApplication.config.gwurk.port}${grailsLinkGenerator.link(action:"external",controller: "workflow", params:[task:taskRun.id])}"
+        String url = "https://${grailsApplication.config.gwurk.hostname}:${grailsApplication.config.gwurk.port}${grailsLinkGenerator.link(action:"external",controller: "workflow", params:[task:taskRun.id])}"
         log.info("Would link: ${url}")
         HIT h = requesterService.createHIT(
                 null, // hitTypeId
